@@ -27,6 +27,7 @@ python-embed.zip
 
 # Backend generated assets
 manga-backend/models/
+manga-backend/.venv/
 manga-backend/.runtime/
 manga-backend/.runtime-test-cache/
 manga-backend/__pycache__/

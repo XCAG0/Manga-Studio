@@ -59,6 +59,18 @@ function createRuntimePaths(pythonPath, serverPath) {
     };
 }
 
+function getInstallerPathCandidates() {
+    return [
+        path.join(__dirname, '..', 'manga-backend', 'installer.bat'),
+        path.join(process.resourcesPath, 'manga-backend', 'installer.bat'),
+    ];
+}
+
+function getInstallerHintPath() {
+    return getInstallerPathCandidates().find((candidate) => fs.existsSync(candidate))
+        || getInstallerPathCandidates()[0];
+}
+
 function getRuntimeManagerPaths() {
     return [
         path.join(__dirname, '..', 'manga-backend', 'ocr_runtime_manager.pyc'),
@@ -141,6 +153,65 @@ function runPythonHelper(pythonPath, args, env, label, timeoutMs = 20 * 60 * 100
     });
 }
 
+async function verifyPythonDependencies(pythonPath) {
+    const script = [
+        'import importlib.util, json',
+        'modules = ["flask", "click", "flask_cors", "PIL", "numpy", "cv2", "paddle", "paddleocr", "deep_translator"]',
+        'missing = [name for name in modules if importlib.util.find_spec(name) is None]',
+        'print(json.dumps({"missing": missing}))',
+    ].join('; ');
+
+    try {
+        const result = await runPythonHelper(
+            pythonPath,
+            ['-c', script],
+            {
+                ...process.env,
+                PYTHONIOENCODING: 'utf-8',
+                PYTHONNOUSERSITE: '1',
+            },
+            'Python Check',
+            2 * 60 * 1000
+        );
+
+        const payload = parseLastJsonLine(result.stdout) || {};
+        const missing = Array.isArray(payload.missing) ? payload.missing : [];
+
+        return {
+            ok: result.code === 0 && missing.length === 0,
+            missing,
+            error: result.code === 0 ? null : (result.stderr || result.stdout || 'Dependency check failed').trim(),
+        };
+    } catch (error) {
+        return {
+            ok: false,
+            missing: [],
+            error: error.message,
+        };
+    }
+}
+
+function showBackendSetupError(pythonPath, dependencyCheck) {
+    const installerPath = getInstallerHintPath();
+    const missingText = dependencyCheck.missing?.length
+        ? `Missing modules: ${dependencyCheck.missing.join(', ')}`
+        : (dependencyCheck.error || 'Python backend requirements are missing.');
+
+    const detail = [
+        `Python executable: ${pythonPath}`,
+        missingText,
+        '',
+        'Run the backend installer, then restart Manga Studio:',
+        installerPath,
+        '',
+        'For manual setup instructions, open SETUP.md from the repository root.',
+    ].join('\n');
+
+    logToFile(`[Python] Backend setup required. ${missingText}`);
+
+    dialog.showErrorBox('Backend Setup Required', detail);
+}
+
 async function selectOcrRuntime(pythonPath, serverPath) {
     const runtimeManagerPath = getRuntimeManagerPaths().find((candidate) => fs.existsSync(candidate));
     const runtimePaths = createRuntimePaths(pythonPath, serverPath);
@@ -200,6 +271,10 @@ async function startPythonServer() {
 
         // Python executable paths to try
         const pythonPaths = [
+            path.join(__dirname, '..', 'manga-backend', '.venv', 'Scripts', 'python.exe'),
+            path.join(__dirname, '..', 'manga-backend', '.venv', 'bin', 'python'),
+            path.join(__dirname, '..', '.venv', 'Scripts', 'python.exe'),
+            path.join(__dirname, '..', '.venv', 'bin', 'python'),
             path.join(__dirname, '..', 'python-embed', 'python.exe'),
             path.join(process.resourcesPath, 'python-embed', 'python.exe'),
             'python'
@@ -257,6 +332,12 @@ async function startPythonServer() {
 
         logToFile(`[Python] Executable: ${pythonPath}`);
         logToFile(`[Python] Script: ${serverPath}`);
+
+        const dependencyCheck = await verifyPythonDependencies(pythonPath);
+        if (!dependencyCheck.ok) {
+            showBackendSetupError(pythonPath, dependencyCheck);
+            return;
+        }
 
         const runtimeSelection = await selectOcrRuntime(pythonPath, serverPath);
         logToFile(`[Python] OCR runtime mode: ${runtimeSelection.selectedMode}`);

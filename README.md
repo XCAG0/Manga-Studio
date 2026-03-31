@@ -14,10 +14,15 @@ Manga Studio is a desktop manga translation editor built with Electron, React, a
 
 ```bash
 npm install
-npm run dev
 ```
 
-In another terminal:
+Then install backend dependencies:
+
+```bat
+manga-backend\installer.bat
+```
+
+Then run:
 
 ```bash
 npm run electron
@@ -26,6 +31,8 @@ npm run electron
 ## Environment
 
 Copy `.env.example` to `.env` and fill in your own public Supabase values.
+
+Detailed setup steps are available in [SETUP.md](./SETUP.md).
 
 ## Notes
 
