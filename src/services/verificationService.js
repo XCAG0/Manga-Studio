@@ -8,12 +8,23 @@ import { SUPABASE_CONFIG, APP_VERSION } from '../config/supabase';
 
 // Initialize Supabase client
 const supabase = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+const PUBLIC_SOURCE_BUILD = true;
 
 /**
  * Check app status (kill switch, maintenance)
  * Returns null if check fails (allows offline usage)
  */
 export async function checkAppStatus() {
+    if (PUBLIC_SOURCE_BUILD) {
+        return {
+            isActive: true,
+            maintenanceMode: false,
+            maintenanceMessage: '',
+            emergencyShutdown: false,
+            publicSourceBuild: true
+        };
+    }
+
     try {
         // Call the check_app_status function
         const { data, error } = await supabase.rpc('check_app_status');
@@ -52,6 +63,20 @@ export async function checkAppStatus() {
 export async function performStartupCheck() {
     console.log('[Verification] Starting app verification...');
     console.log('[Verification] Current version:', APP_VERSION);
+
+    if (PUBLIC_SOURCE_BUILD) {
+        return {
+            success: true,
+            status: {
+                isActive: true,
+                maintenanceMode: false,
+                maintenanceMessage: '',
+                emergencyShutdown: false,
+                publicSourceBuild: true
+            },
+            message: 'Verification disabled for public source build'
+        };
+    }
 
     try {
         const status = await checkAppStatus();

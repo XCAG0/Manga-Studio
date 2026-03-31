@@ -36,4 +36,8 @@ Detailed setup steps are available in [SETUP.md](./SETUP.md).
 
 ## Notes
 
+This public source build disables the private Supabase startup verification used in the internal release.
+
+The dev launcher also clears `ELECTRON_RUN_AS_NODE` automatically if it is set in your shell.
+
 This public repository contains the source code only. If you want to package the app with a bundled Python runtime or backend models, add those assets locally before building.

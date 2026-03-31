@@ -8,7 +8,7 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
-const { autoUpdater } = require('electron-updater');
+let autoUpdater = null;
 
 // Discord Rich Presence
 let discordRPC = null;
@@ -34,6 +34,19 @@ function logToFile(message) {
         fs.appendFileSync(logFile, logEntry);
     } catch (e) { }
     console.log(message);
+}
+
+function getAutoUpdater() {
+    if (isDev) return null;
+    if (autoUpdater) return autoUpdater;
+
+    try {
+        ({ autoUpdater } = require('electron-updater'));
+        return autoUpdater;
+    } catch (error) {
+        logToFile(`[AutoUpdater] Failed to load updater module: ${error.message}`);
+        return null;
+    }
 }
 
 function createRuntimePaths(pythonPath, serverPath) {
@@ -482,17 +495,16 @@ function createWindow() {
             enableWebSQL: false,
             spellcheck: false,
             backgroundThrottling: false,
-            devTools: isDev, // STRICTLY DISABLE DEVTOOLS IN PRODUCTION
+            devTools: isDev, 
         }
     });
 
-    // Remove default menu in production to prevent "View -> Toggle Developer Tools"
     if (!isDev) {
         mainWindow.removeMenu();
     }
 
     let shown = false;
-    let forceClose = false; // Flag to allow force close after confirmation
+    let forceClose = false; 
 
     // Show window when ready
     mainWindow.webContents.on('did-finish-load', () => {
@@ -578,37 +590,43 @@ function setupAutoUpdater() {
         return;
     }
 
-    autoUpdater.autoDownload = true;
-    autoUpdater.autoInstallOnAppQuit = true;
+    const updater = getAutoUpdater();
+    if (!updater) {
+        logToFile('[AutoUpdater] Unavailable in this environment');
+        return;
+    }
 
-    autoUpdater.logger = {
+    updater.autoDownload = true;
+    updater.autoInstallOnAppQuit = true;
+
+    updater.logger = {
         info: (msg) => console.log('[AutoUpdater]', msg),
         warn: (msg) => console.warn('[AutoUpdater]', msg),
         error: (msg) => console.error('[AutoUpdater]', msg)
     };
 
-    autoUpdater.on('checking-for-update', () => {
+    updater.on('checking-for-update', () => {
         console.log('[AutoUpdater] Checking for updates...');
         if (mainWindow) {
             mainWindow.webContents.send('update-status', { status: 'checking' });
         }
     });
 
-    autoUpdater.on('update-available', (info) => {
+    updater.on('update-available', (info) => {
         console.log('[AutoUpdater] Update available:', info.version);
         if (mainWindow) {
             mainWindow.webContents.send('update-status', { status: 'available', version: info.version });
         }
     });
 
-    autoUpdater.on('update-not-available', () => {
+    updater.on('update-not-available', () => {
         console.log('[AutoUpdater] No updates available');
         if (mainWindow) {
             mainWindow.webContents.send('update-status', { status: 'not-available' });
         }
     });
 
-    autoUpdater.on('download-progress', (progress) => {
+    updater.on('download-progress', (progress) => {
         console.log(`[AutoUpdater] Download: ${progress.percent.toFixed(1)}%`);
         if (mainWindow) {
             mainWindow.webContents.send('update-status', {
@@ -620,7 +638,7 @@ function setupAutoUpdater() {
         }
     });
 
-    autoUpdater.on('update-downloaded', (info) => {
+    updater.on('update-downloaded', (info) => {
         console.log('[AutoUpdater] Update downloaded:', info.version);
         updateDownloaded = true;
         if (mainWindow) {
@@ -636,11 +654,11 @@ function setupAutoUpdater() {
             defaultId: 0,
             noLink: true
         }).then(() => {
-            autoUpdater.quitAndInstall(false, true);
+            updater.quitAndInstall(false, true);
         });
     });
 
-    autoUpdater.on('error', (error) => {
+    updater.on('error', (error) => {
         console.error('[AutoUpdater] Error:', error);
         if (mainWindow) {
             mainWindow.webContents.send('update-status', { status: 'error', message: error.message });
@@ -649,7 +667,7 @@ function setupAutoUpdater() {
 
     // Check for updates after 3 seconds
     setTimeout(() => {
-        autoUpdater.checkForUpdates().catch((error) => {
+        updater.checkForUpdates().catch((error) => {
             console.error('[AutoUpdater] Check failed:', error);
         });
     }, 3000);
@@ -661,8 +679,10 @@ function setupAutoUpdater() {
 
 ipcMain.handle('check-for-updates', async () => {
     if (isDev) return { status: 'dev-mode' };
+    const updater = getAutoUpdater();
+    if (!updater) return { status: 'unavailable', message: 'Auto updater is not available in this environment.' };
     try {
-        const result = await autoUpdater.checkForUpdates();
+        const result = await updater.checkForUpdates();
         return { status: 'checked', info: result };
     } catch (error) {
         return { status: 'error', message: error.message };
@@ -670,8 +690,9 @@ ipcMain.handle('check-for-updates', async () => {
 });
 
 ipcMain.handle('install-update', () => {
-    if (updateDownloaded) {
-        autoUpdater.quitAndInstall(false, true);
+    const updater = getAutoUpdater();
+    if (updateDownloaded && updater) {
+        updater.quitAndInstall(false, true);
     }
 });
 

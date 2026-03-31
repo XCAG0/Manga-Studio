@@ -29,5 +29,7 @@ npm run electron
 ## Notes
 
 - The dev server now uses `--strictPort`, so it requires port `5173` to be free.
+- `npm run electron` now clears `ELECTRON_RUN_AS_NODE` automatically before launching Electron.
 - If the backend says Python modules are missing, rerun `manga-backend\installer.bat`.
+- Startup verification against the private Supabase release backend is disabled in this public source build.
 - The public repository does not include `python-embed` or bundled AI models. Those must be added locally if you want a packaged build with embedded runtimes.
