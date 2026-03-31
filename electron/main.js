@@ -346,10 +346,15 @@ async function startPythonServer() {
         logToFile(`[Python] Executable: ${pythonPath}`);
         logToFile(`[Python] Script: ${serverPath}`);
 
+        const usingSystemPython = pythonPath === 'python';
         const dependencyCheck = await verifyPythonDependencies(pythonPath);
         if (!dependencyCheck.ok) {
-            showBackendSetupError(pythonPath, dependencyCheck);
-            return;
+            if (usingSystemPython) {
+                logToFile(`[Python] System Python dependency check failed, attempting direct startup anyway: ${dependencyCheck.error || dependencyCheck.missing?.join(', ') || 'Unknown dependency issue'}`);
+            } else {
+                showBackendSetupError(pythonPath, dependencyCheck);
+                return;
+            }
         }
 
         const runtimeSelection = await selectOcrRuntime(pythonPath, serverPath);
