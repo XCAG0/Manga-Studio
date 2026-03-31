@@ -6,8 +6,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { SUPABASE_CONFIG, APP_VERSION } from '../config/supabase';
 
-// Initialize Supabase client
-const supabase = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+const hasSupabaseConfig = Boolean(SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey);
+const supabase = hasSupabaseConfig
+    ? createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey)
+    : null;
 const PUBLIC_SOURCE_BUILD = true;
 
 // Security constants (obfuscated via encoding)
@@ -111,6 +113,17 @@ async function getDeviceInfo() {
  */
 export async function checkAppStatus() {
     try {
+        if (PUBLIC_SOURCE_BUILD) {
+            return {
+                success: true,
+                isActive: true,
+                maintenanceMode: false,
+                maintenanceMessage: '',
+                emergencyShutdown: false,
+                publicSourceBuild: true
+            };
+        }
+
         if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) {
             return {
                 success: false,
@@ -157,6 +170,14 @@ export async function checkAppStatus() {
  */
 export async function checkForUpdates() {
     try {
+        if (!supabase) {
+            return {
+                success: false,
+                error: 'Supabase configuration is missing',
+                currentVersion: APP_VERSION
+            };
+        }
+
         const request = await createSignedRequest({
             action: 'check_update',
             version: APP_VERSION
@@ -216,6 +237,13 @@ export async function checkForUpdates() {
  */
 export async function isVersionSupported() {
     try {
+        if (!supabase) {
+            return {
+                success: false,
+                error: 'Supabase configuration is missing'
+            };
+        }
+
         const request = await createSignedRequest({
             action: 'check_support',
             version: APP_VERSION
@@ -246,6 +274,10 @@ export async function isVersionSupported() {
  */
 async function logUpdateCheck(status) {
     try {
+        if (!supabase) {
+            return;
+        }
+
         const deviceInfo = await getDeviceInfo();
 
         await supabase.rpc('log_update_check', {

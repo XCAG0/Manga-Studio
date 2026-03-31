@@ -6,8 +6,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { SUPABASE_CONFIG, APP_VERSION } from '../config/supabase';
 
-// Initialize Supabase client
-const supabase = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+const hasSupabaseConfig = Boolean(SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey);
+const supabase = hasSupabaseConfig
+    ? createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey)
+    : null;
 const PUBLIC_SOURCE_BUILD = true;
 
 /**
@@ -26,6 +28,10 @@ export async function checkAppStatus() {
     }
 
     try {
+        if (!supabase) {
+            return null;
+        }
+
         // Call the check_app_status function
         const { data, error } = await supabase.rpc('check_app_status');
 
