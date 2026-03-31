@@ -7,7 +7,7 @@
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 let autoUpdater = null;
 
 // Discord Rich Presence
@@ -91,6 +91,89 @@ function getRuntimeManagerPaths() {
         path.join(process.resourcesPath, 'manga-backend', 'ocr_runtime_manager.pyc'),
         path.join(process.resourcesPath, 'manga-backend', 'ocr_runtime_manager.py'),
     ];
+}
+
+function isUsablePythonPath(candidate) {
+    if (!candidate || candidate === 'python') return false;
+
+    const normalized = String(candidate).trim().replace(/^"(.*)"$/, '$1');
+    if (!normalized) return false;
+    if (!fs.existsSync(normalized)) return false;
+
+    try {
+        const stats = fs.statSync(normalized);
+        if (!stats.isFile() || stats.size === 0) {
+            return false;
+        }
+    } catch (error) {
+        return false;
+    }
+
+    const lower = normalized.toLowerCase();
+    if (lower.includes('\\windowsapps\\')) return false;
+    if (lower.endsWith('\\system32\\python')) return false;
+
+    return true;
+}
+
+function resolveSystemPythonPath() {
+    const probeEnv = {
+        ...process.env,
+        PYTHONIOENCODING: 'utf-8',
+        PYTHONNOUSERSITE: '1',
+    };
+
+    const probeCommands = [
+        ['py', ['-3', '-c', 'import sys; print(sys.executable)']],
+        ['python', ['-c', 'import sys; print(sys.executable)']],
+    ];
+
+    for (const [command, args] of probeCommands) {
+        try {
+            const result = spawnSync(command, args, {
+                env: probeEnv,
+                encoding: 'utf-8',
+                windowsHide: true,
+            });
+
+            const candidate = result.stdout
+                ?.split(/\r?\n/)
+                .map((line) => line.trim())
+                .filter(Boolean)
+                .pop();
+
+            if (isUsablePythonPath(candidate)) {
+                return candidate;
+            }
+        } catch (error) {
+            // Try the next probe.
+        }
+    }
+
+    if (process.platform === 'win32') {
+        try {
+            const result = spawnSync('where.exe', ['python'], {
+                env: probeEnv,
+                encoding: 'utf-8',
+                windowsHide: true,
+            });
+
+            const candidates = result.stdout
+                ?.split(/\r?\n/)
+                .map((line) => line.trim())
+                .filter(Boolean) || [];
+
+            for (const candidate of candidates) {
+                if (isUsablePythonPath(candidate)) {
+                    return candidate;
+                }
+            }
+        } catch (error) {
+            // Fall through to plain python.
+        }
+    }
+
+    return 'python';
 }
 
 function parseLastJsonLine(stdout) {
@@ -282,6 +365,8 @@ async function startPythonServer() {
         logToFile(`[Python] __dirname: ${__dirname}`);
         logToFile(`[Python] resourcesPath: ${process.resourcesPath}`);
 
+        const resolvedSystemPython = resolveSystemPythonPath();
+
         // Python executable paths to try
         const pythonPaths = [
             path.join(__dirname, '..', 'manga-backend', '.venv', 'Scripts', 'python.exe'),
@@ -290,6 +375,7 @@ async function startPythonServer() {
             path.join(__dirname, '..', '.venv', 'bin', 'python'),
             path.join(__dirname, '..', 'python-embed', 'python.exe'),
             path.join(process.resourcesPath, 'python-embed', 'python.exe'),
+            resolvedSystemPython,
             'python'
         ];
 
