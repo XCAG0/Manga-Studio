@@ -1,0 +1,173 @@
+/**
+ * Layers Panel Styles
+ * Clean and modern look for layers management
+ */
+
+.layers-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 120px;
+    overflow: hidden;
+}
+
+.panel-header .layer-count {
+    margin-left: auto;
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    background: var(--bg-secondary);
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.layers-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-xs);
+}
+
+/* Empty State */
+.layers-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: var(--spacing-xl);
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.layers-empty p {
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
+.layers-empty .hint {
+    font-size: var(--font-size-xs);
+    opacity: 0.7;
+}
+
+/* Layer Item */
+.layer-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+}
+
+.layer-item:hover {
+    background: var(--bg-hover);
+}
+
+.layer-item.active {
+    background: var(--bg-active);
+    border-color: var(--accent-primary);
+}
+
+.layer-item.hidden-layer {
+    opacity: 0.5;
+}
+
+.layer-item.locked-layer {
+    background: var(--bg-secondary);
+}
+
+/* Layer Thumbnail */
+.layer-thumbnail {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.thumbnail-canvas {
+    width: 32px;
+    height: 32px;
+}
+
+/* Layer Info */
+.layer-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.layer-name {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+/* Opacity Control */
+.layer-opacity-control {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.layer-opacity-control input[type="range"] {
+    width: 50px;
+    height: 3px;
+    cursor: pointer;
+}
+
+.layer-opacity-control .opacity-value {
+    font-size: 10px;
+    color: var(--text-muted);
+    min-width: 28px;
+}
+
+/* Layer Actions */
+.layer-actions {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+/* Layer Buttons */
+.layer-btn {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.layer-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.layer-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.layer-btn.danger:hover {
+    background: var(--error);
+    color: white;
+}

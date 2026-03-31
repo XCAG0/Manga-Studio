@@ -1,0 +1,35 @@
+/* App Layout */
+.app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: var(--bg-primary);
+}
+
+.app-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.main-workspace {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary);
+    background-image:
+        radial-gradient(circle at 1px 1px, var(--border-color) 1px, transparent 0);
+    background-size: 20px 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.side-panels {
+    display: flex;
+    flex-direction: column;
+    width: 280px;
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--border-color);
+    overflow: hidden;
+}

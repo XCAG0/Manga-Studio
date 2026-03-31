@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-electron/
+dist-electron-portable/
+.build/
+out/
+buildlog.txt
+*.log
+npm-debug.log*
+
+# Private/runtime assets
+.env
+.env.local
+.env.production
+.env.development
+python-embed/
+python-embed.zip
+
+# Temp / staging
+.tmp_protected_backend/
+.tmp_deobf_main.js
+.tmp_deobf_preload.js
+.github-public-staging/
+
+# Backend generated assets
+manga-backend/models/
+manga-backend/.runtime/
+manga-backend/.runtime-test-cache/
+manga-backend/__pycache__/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

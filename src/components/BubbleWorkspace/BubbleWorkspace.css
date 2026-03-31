@@ -1,0 +1,707 @@
+/**
+ * Bubble Workshop - Professional Styles
+ * Dark theme with smooth animations
+ */
+
+/* ============================================
+   OVERLAY
+   ============================================ */
+.bubble-workshop-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   MODAL
+   ============================================ */
+.bubble-workshop-modal {
+    width: 95vw;
+    max-width: 1100px;
+    height: 90vh;
+    max-height: 700px;
+    background: #1a1a1a;
+    border-radius: 16px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #333;
+    overflow: hidden;
+    animation: slideUp 0.25s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.workshop-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: linear-gradient(180deg, #252525 0%, #1f1f1f 100%);
+    border-bottom: 1px solid #333;
+}
+
+.workshop-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.workshop-title svg {
+    color: #3b82f6;
+}
+
+.workshop-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.workshop-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: #2d2d2d;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.workshop-btn:hover {
+    background: #e74c3c;
+    border-color: #e74c3c;
+    color: #fff;
+}
+
+/* ============================================
+   BODY
+   ============================================ */
+.workshop-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ============================================
+   PANELS
+   ============================================ */
+.workshop-panel {
+    width: 260px;
+    background: #1e1e1e;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.workshop-left {
+    border-right: 1px solid #333;
+}
+
+.workshop-right {
+    border-left: 1px solid #333;
+}
+
+/* Custom Scrollbar */
+.workshop-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.workshop-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.workshop-panel::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 3px;
+}
+
+.workshop-panel::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* ============================================
+   PANEL SECTIONS
+   ============================================ */
+.panel-section {
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    color: #999;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.section-header:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.section-header svg {
+    flex-shrink: 0;
+}
+
+.section-content {
+    padding: 0 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ============================================
+   BUBBLE TYPE GRID
+   ============================================ */
+.bubble-type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 0 16px 16px;
+}
+
+.type-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 8px;
+    background: #252525;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #888;
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.type-btn:hover {
+    background: #2d2d2d;
+    color: #fff;
+    border-color: #444;
+}
+
+.type-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #fff;
+}
+
+.type-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* ============================================
+   TAIL DIRECTION GRID
+   ============================================ */
+.tail-direction-grid {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.tail-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #252525;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.tail-btn:hover {
+    background: #2d2d2d;
+    color: #fff;
+}
+
+.tail-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #fff;
+}
+
+/* ============================================
+   SLIDERS
+   ============================================ */
+.slider-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.slider-row label {
+    font-size: 11px;
+    color: #888;
+}
+
+.slider-row input[type="range"] {
+    width: 100%;
+    height: 6px;
+    background: #333;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+.slider-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #3b82f6;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.slider-row input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.slider-row.compact {
+    gap: 4px;
+}
+
+.slider-row.compact label {
+    font-size: 10px;
+}
+
+/* ============================================
+   COLOR PICKER
+   ============================================ */
+.color-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-row input[type="color"] {
+    width: 40px;
+    height: 32px;
+    padding: 2px;
+    background: #252525;
+    border: 1px solid #444;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.color-row input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 2px;
+}
+
+.color-row input[type="color"]::-webkit-color-swatch {
+    border-radius: 4px;
+    border: none;
+}
+
+.color-row span {
+    font-size: 11px;
+    color: #888;
+}
+
+.color-row.compact input[type="color"] {
+    width: 32px;
+    height: 26px;
+}
+
+/* ============================================
+   SELECT DROPDOWN
+   ============================================ */
+.style-select {
+    width: 100%;
+    padding: 10px 12px;
+    background: #252525;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.style-select:hover {
+    border-color: #444;
+}
+
+.style-select:focus {
+    border-color: #3b82f6;
+}
+
+.style-select option {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+/* ============================================
+   GRADIENT EDITOR
+   ============================================ */
+.gradient-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.gradient-preview {
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid #333;
+}
+
+.gradient-stops {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.gradient-stop-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.gradient-stop-row input[type="color"] {
+    width: 28px;
+    height: 28px;
+    padding: 2px;
+    background: #252525;
+    border: 1px solid #444;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.gradient-stop-row input[type="range"] {
+    flex: 1;
+    height: 5px;
+    background: #333;
+    border-radius: 3px;
+    -webkit-appearance: none;
+}
+
+.gradient-stop-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #3b82f6;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.gradient-stop-row span {
+    width: 35px;
+    font-size: 10px;
+    color: #666;
+    text-align: right;
+}
+
+.remove-stop {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.remove-stop:hover {
+    background: #e74c3c;
+    border-color: #e74c3c;
+    color: #fff;
+}
+
+.add-stop-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    background: transparent;
+    border: 1px dashed #444;
+    border-radius: 6px;
+    color: #666;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.add-stop-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+/* ============================================
+   BORDER STYLES
+   ============================================ */
+.border-styles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.border-style-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 6px;
+    background: #252525;
+    border: 1px solid #333;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.border-style-btn:hover {
+    background: #2d2d2d;
+    border-color: #444;
+}
+
+.border-style-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.border-style-btn .style-preview {
+    font-size: 10px;
+    color: #888;
+    letter-spacing: -0.5px;
+}
+
+.border-style-btn.active .style-preview {
+    color: #fff;
+}
+
+.border-style-btn span:last-child {
+    font-size: 9px;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.border-style-btn.active span:last-child {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ============================================
+   CHECKBOX
+   ============================================ */
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+.checkbox-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #3b82f6;
+    cursor: pointer;
+}
+
+.checkbox-row span {
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* ============================================
+   EFFECT CONTROLS
+   ============================================ */
+.effect-controls {
+    padding-left: 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+/* ============================================
+   PREVIEW AREA
+   ============================================ */
+.workshop-preview {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background:
+        linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+        linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
+        linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+    background-size: 24px 24px;
+    background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+    background-color: #151515;
+    padding: 30px;
+    min-width: 0;
+}
+
+.preview-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.bubble-preview-svg {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+.preview-info {
+    margin-top: 16px;
+    padding: 6px 14px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+    font-size: 11px;
+    color: #666;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.workshop-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 14px 20px;
+    background: #1f1f1f;
+    border-top: 1px solid #333;
+}
+
+.footer-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.footer-btn.secondary {
+    background: #2d2d2d;
+    border: 1px solid #444;
+    color: #aaa;
+}
+
+.footer-btn.secondary:hover {
+    background: #353535;
+    color: #fff;
+}
+
+.footer-btn.primary {
+    background: #3b82f6;
+    border: 1px solid #3b82f6;
+    color: #fff;
+}
+
+.footer-btn.primary:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+    .bubble-workshop-modal {
+        width: 98vw;
+        height: 95vh;
+        max-height: none;
+    }
+
+    .workshop-panel {
+        width: 200px;
+    }
+
+    .bubble-type-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .workshop-body {
+        flex-direction: column;
+    }
+
+    .workshop-panel {
+        width: 100%;
+        max-height: 200px;
+    }
+
+    .workshop-left {
+        border-right: none;
+        border-bottom: 1px solid #333;
+    }
+
+    .workshop-right {
+        border-left: none;
+        border-top: 1px solid #333;
+    }
+}
